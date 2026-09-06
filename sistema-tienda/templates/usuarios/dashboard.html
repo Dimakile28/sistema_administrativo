@@ -1,0 +1,20 @@
+<!-- templates/usuarios/dashboard.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Control</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 2rem;">
+    <h1>Bienvenido, {{ user.first_name|default:user.username }}</h1>
+    <p><strong>Nivel de Acceso:</strong> {{ user.get_rol_display }}</p>
+    <p><strong>Tienda:</strong> {{ user.sede.nombre|default:"Administración General" }}</p>
+    
+    <hr>
+    
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" style="padding: 10px; background-color: #dc3545; color: white; border: none; border-radius: 4px;">Cerrar Sesión</button>
+    </form>
+</body>
+</html>
