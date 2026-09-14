@@ -1,4 +1,3 @@
-```markdown
 # Especificaciones Técnicas: Módulo de Inventario (POS Django)
 
 Esta es la guía de requerimientos, estructura de base de datos y reglas de negocio para el desarrollo del **Módulo de Inventario** de nuestro sistema POS.
