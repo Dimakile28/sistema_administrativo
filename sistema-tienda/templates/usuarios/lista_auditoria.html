@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+<style>
+    .header-modulo {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 2rem; border-bottom: 1px solid var(--gris-claro); padding-bottom: 1rem;
+        flex-wrap: wrap; gap: 15px;
+    }
+    
+    .table-responsive { width: 100%; overflow-x: auto; }
+    
+    .tabla-moderna { 
+        width: 100%; border-collapse: collapse; background: white; 
+        border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+        min-width: 700px;
+    }
+    .tabla-moderna thead { background-color: var(--azul-oscuro); color: white; }
+    .tabla-moderna th, .tabla-moderna td { padding: 15px; text-align: left; border-bottom: 1px solid var(--gris-claro); }
+    .tabla-moderna tbody tr:hover { background-color: var(--bg-principal); }
+    
+    /* Etiquetas para los módulos */
+    .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; display: inline-block;}
+    .badge-usuarios { background-color: #cce5ff; color: #004085; }
+    .badge-inventario { background-color: #d4edda; color: #155724; }
+    .badge-ventas { background-color: #fff3cd; color: #856404; }
+    .badge-sistema { background-color: #e2e3e5; color: #383d41; }
+    
+    /* Colores para la fecha */
+    .fecha-auditoria { color: var(--gris-medio); font-size: 0.9rem; }
+</style>
+
+<div class="header-modulo">
+    <div>
+        <h1 style="margin: 0;"><i class="fa-solid fa-shield-halved"></i> Registro de Auditoría</h1>
+        <p style="color: var(--gris-medio); margin-top: 5px;">Historial de acciones y movimientos del personal</p>
+    </div>
+</div>
+
+<!-- Barra de Filtros y Reportes -->
+<div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--gris-claro); box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+    <form method="get" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+        
+        <div style="flex: 1; min-width: 150px;">
+            <label style="font-size: 0.85rem; color: var(--gris-medio); font-weight: bold;">Módulo</label>
+            <select name="modulo" class="input-form" style="padding: 8px;">
+                <option value="">Todos los módulos</option>
+                <option value="Usuarios" {% if request.GET.modulo == 'Usuarios' %}selected{% endif %}>Usuarios</option>
+                <option value="Inventario" {% if request.GET.modulo == 'Inventario' %}selected{% endif %}>Inventario</option>
+                <option value="Ventas" {% if request.GET.modulo == 'Ventas' %}selected{% endif %}>Ventas</option>
+            </select>
+        </div>
+
+        <div style="flex: 1; min-width: 130px;">
+            <label style="font-size: 0.85rem; color: var(--gris-medio); font-weight: bold;">Fecha Inicio</label>
+            <input type="date" name="fecha_inicio" value="{{ request.GET.fecha_inicio }}" class="input-form" style="padding: 8px;">
+        </div>
+
+        <div style="flex: 1; min-width: 130px;">
+            <label style="font-size: 0.85rem; color: var(--gris-medio); font-weight: bold;">Fecha Fin</label>
+            <input type="date" name="fecha_fin" value="{{ request.GET.fecha_fin }}" class="input-form" style="padding: 8px;">
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" name="exportar" value="filtrar" style="background: var(--gris-medio); padding: 10px 15px; border: none; border-radius: 4px; color: white; cursor: pointer;" title="Aplicar Filtros">
+                <i class="fa-solid fa-magnifying-glass"></i> Filtrar
+            </button>
+            <button type="submit" name="exportar" value="excel" style="background: #2ecc71; padding: 10px 15px; border: none; border-radius: 4px; color: white; cursor: pointer;" title="Descargar Excel">
+                <i class="fa-solid fa-file-excel"></i> Excel
+            </button>
+            <button type="submit" name="exportar" value="pdf" style="background: #e74c3c; padding: 10px 15px; border: none; border-radius: 4px; color: white; cursor: pointer;" title="Descargar PDF">
+                <i class="fa-solid fa-file-pdf"></i> PDF
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="table-responsive">
+    <table class="tabla-moderna">
+        <thead>
+            <tr>
+                <th>Fecha y Hora</th>
+                <th>Usuario Responsable</th>
+                <th>Módulo</th>
+                <th>Acción Realizada</th>
+                <th>Origen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in registros %}
+            <tr>
+                <td class="fecha-auditoria"><i class="fa-regular fa-clock"></i> {{ r.fecha|date:"d M Y, h:i A" }}</td>
+                
+                <td>
+                    <strong>{{ r.usuario.username|default:"Sistema" }}</strong>
+                    {% if r.usuario %}
+                        <br><span style="font-size: 0.8rem; color: var(--gris-medio);">{{ r.usuario.get_rol_display }}</span>
+                    {% endif %}
+                </td>
+                
+                <td>
+                    {% if r.modulo == 'Usuarios' %}
+                        <span class="badge badge-usuarios"><i class="fa-solid fa-users"></i> {{ r.modulo }}</span>
+                    {% elif r.modulo == 'Inventario' %}
+                        <span class="badge badge-inventario"><i class="fa-solid fa-boxes-stacked"></i> {{ r.modulo }}</span>
+                    {% elif r.modulo == 'Ventas' %}
+                        <span class="badge badge-ventas"><i class="fa-solid fa-cash-register"></i> {{ r.modulo }}</span>
+                    {% else %}
+                        <span class="badge badge-sistema"><i class="fa-solid fa-gear"></i> {{ r.modulo }}</span>
+                    {% endif %}
+                </td>
+                
+                <td>{{ r.accion }}</td>
+                
+                <td style="color: var(--gris-medio); font-size: 0.9rem;">
+                    {% if r.ip_origen %}
+                        <i class="fa-solid fa-network-wired"></i> {{ r.ip_origen }}
+                    {% else %}
+                        Local
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; color: var(--gris-medio); padding: 30px;">
+                    <i class="fa-solid fa-inbox" style="font-size: 2rem; margin-bottom: 10px;"></i><br>
+                    Aún no hay registros de auditoría en el sistema.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

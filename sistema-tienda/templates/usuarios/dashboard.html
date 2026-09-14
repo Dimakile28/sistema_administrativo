@@ -1,20 +1,112 @@
-<!-- templates/usuarios/dashboard.html -->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Panel de Control</title>
-</head>
-<body style="font-family: Arial, sans-serif; padding: 2rem;">
-    <h1>Bienvenido, {{ user.first_name|default:user.username }}</h1>
-    <p><strong>Nivel de Acceso:</strong> {{ user.get_rol_display }}</p>
-    <p><strong>Tienda:</strong> {{ user.sede.nombre|default:"Administración General" }}</p>
+{% extends 'base.html' %}
+
+{% block contenido %}
+<style>
+    .card-modulo {
+        background: #ffffff;
+        color: var(--azul-oscuro);
+        padding: 25px 20px; 
+        border-radius: 8px; 
+        text-align: center; 
+        border: 1px solid var(--gris-claro);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
     
-    <hr>
+    .card-modulo:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(39, 38, 53, 0.1);
+        border-bottom: 4px solid var(--azul-oscuro);
+    }
+
+    .card-modulo i {
+        font-size: 2.5rem;
+        color: var(--gris-medio);
+        margin-bottom: 15px;
+        transition: color 0.3s ease;
+    }
+
+    .card-modulo:hover i {
+        color: var(--azul-claro);
+    }
+
+    .card-modulo h3 {
+        margin: 0 0 5px 0;
+        font-size: 1.2rem;
+    }
+
+    .card-modulo p {
+        margin: 0;
+        color: var(--gris-medio);
+        font-size: 0.9rem;
+    }
+</style>
+
+<div style="margin-bottom: 2.5rem; border-bottom: 1px solid var(--gris-claro); padding-bottom: 1rem;">
+    <h1 style="margin-bottom: 5px;">Panel de Control</h1>
+    <p style="color: var(--gris-medio); margin-top: 0;">
+        <strong>Sede:</strong> {{ request.user.sede.nombre|default:"Administración General" }} | 
+        <strong>Acceso:</strong> {{ request.user.get_rol_display }}
+    </p>
+</div>
+
+<!-- Grid de Botones de Acceso Rápido -->
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
     
-    <form action="{% url 'logout' %}" method="post">
-        {% csrf_token %}
-        <button type="submit" style="padding: 10px; background-color: #dc3545; color: white; border: none; border-radius: 4px;">Cerrar Sesión</button>
-    </form>
-</body>
-</html>
+    <a href="#" style="text-decoration: none;">
+        <div class="card-modulo">
+            <i class="fa-solid fa-cash-register"></i>
+            <h3>Ventas</h3>
+            <p>Facturación y Caja</p>
+        </div>
+    </a>
+
+    <a href="#" style="text-decoration: none;">
+        <div class="card-modulo">
+            <i class="fa-solid fa-users"></i>
+            <h3>Clientes</h3>
+            <p>Consultar Deudas</p>
+        </div>
+    </a>
+
+    <a href="#" style="text-decoration: none;">
+        <div class="card-modulo">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            <h3>Inventario</h3>
+            <p>Stock de la Sede</p>
+        </div>
+    </a>
+
+    {% if request.user.rol in 'SUPERVISOR,ENCARGADO,ADMIN' %}
+    <a href="#" style="text-decoration: none;">
+        <div class="card-modulo">
+            <i class="fa-solid fa-mug-hot"></i>
+            <h3>Productos</h3>
+            <p>Catálogo y Recetas</p>
+        </div>
+    </a>
+    
+    <a href="#" style="text-decoration: none;">
+        <div class="card-modulo">
+            <i class="fa-solid fa-chart-line"></i>
+            <h3>Reportes</h3>
+            <p>Análisis de Ventas</p>
+        </div>
+    </a>
+    {% endif %}
+
+   
+</div>
+
+<!-- Contenedor del Dashboard Principal (Gráficas) -->
+<div style="background: #ffffff; padding: 25px; border-radius: 8px; border: 1px solid var(--gris-claro); box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <h3 style="margin-top: 0; color: var(--azul-oscuro); border-bottom: 1px solid var(--bg-principal); padding-bottom: 10px;">Resumen de Operaciones (En construcción)</h3>
+    <div style="height: 250px; background: var(--bg-principal); border: 2px dashed var(--gris-medio); border-radius: 8px; display: flex; justify-content: center; align-items: center; color: var(--gris-medio); margin-top: 20px;">
+        <p><i class="fa-solid fa-chart-column" style="margin-right: 10px;"></i> Aquí irán las gráficas de Ventas Totales y Desglose por Sede.</p>
+    </div>
+</div>
+{% endblock %}

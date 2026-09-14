@@ -1,7 +1,4 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class Sede(models.Model):
@@ -24,3 +21,13 @@ class Usuario(AbstractUser):
 
     def __str__(self):
         return f"{self.username} - {self.get_rol_display()}"
+
+class RegistroAuditoria(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, blank=True)
+    accion = models.CharField(max_length=255) # Ej: "Creó el usuario Juan" o "Eliminó el producto Café"
+    modulo = models.CharField(max_length=50)  # Ej: "Usuarios", "Inventario", "Ventas"
+    fecha = models.DateTimeField(auto_now_add=True)
+    ip_origen = models.GenericIPAddressField(null=True, blank=True)
+
+    def __str__(self):
+        return f"[{self.fecha.strftime('%Y-%m-%d %H:%M')}] {self.usuario.username} - {self.accion}"

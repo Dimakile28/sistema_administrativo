@@ -1,40 +1,179 @@
-<!-- templates/usuarios/login.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ingreso al Sistema</title>
+    <!-- Librería de íconos FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .login-box { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        h2 { text-align: center; color: #333; }
-        .form-group { margin-bottom: 1rem; }
-        label { display: block; margin-bottom: .5rem; color: #666; }
-        input[type="text"], input[type="password"] { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background-color: #0056b3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; }
-        button:hover { background-color: #004494; }
-        .error { color: #dc3545; text-align: center; margin-bottom: 1rem; }
+        /* Paleta de colores */
+        :root {
+            --bg-principal: #E8E9F3;
+            --gris-claro: #CECECE;
+            --gris-medio: #A6A6A8;
+            --azul-oscuro: #272635;
+            --azul-claro: #B1E5F2;
+        }
+
+        body { 
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-principal); 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            color: var(--azul-oscuro);
+        }
+
+        /* Contenedor principal centrado */
+        .login-wrapper {
+            width: 100%;
+            max-width: 400px;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .login-box { 
+            background: #ffffff; 
+            padding: 2.5rem 2rem; 
+            border-radius: 8px; 
+            border: 1px solid var(--gris-claro);
+            box-shadow: 0 10px 25px rgba(39, 38, 53, 0.1); 
+            text-align: center;
+        }
+
+        .login-box h2 { 
+            margin-top: 0; 
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--azul-oscuro);
+            letter-spacing: 1px;
+        }
+
+        .login-box h2 i {
+            color: var(--azul-claro);
+            margin-right: 8px;
+        }
+
+        /* Diseño de los inputs con íconos integrados */
+        .input-group { 
+            position: relative;
+            margin-bottom: 1.5rem; 
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gris-medio);
+            font-weight: bold;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            bottom: 12px;
+            color: var(--gris-medio);
+            font-size: 1.1rem;
+        }
+
+        .input-group input { 
+            width: 100%; 
+            padding: 12px 15px 12px 45px; /* El padding izquierdo deja espacio para el ícono */
+            border: 1px solid var(--gris-claro); 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            font-size: 1rem;
+            color: var(--azul-oscuro);
+            transition: border-color 0.3s ease;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: var(--azul-oscuro);
+        }
+
+        /* Botón de ingreso */
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            background-color: var(--azul-oscuro); 
+            color: var(--bg-principal); 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 1rem; 
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover { 
+            background-color: #1a1a24; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .error { 
+            background-color: #fee2e2;
+            color: #dc2626;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #fca5a5;
+        }
+
+        /* Pie de página fuera de la caja blanca */
+        .login-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            color: var(--gris-medio);
+            font-size: 0.85rem;
+        }
+
+        .login-footer a {
+            color: var(--azul-oscuro);
+            text-decoration: none;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <div class="login-box">
-        <h2>Punto de Venta</h2>
-        {% if form.errors %}
-            <div class="error">Usuario o contraseña incorrectos.</div>
-        {% endif %}
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="id_username">Usuario</label>
-                <input type="text" name="username" autofocus required id="id_username">
-            </div>
-            <div class="form-group">
-                <label for="id_password">Contraseña</label>
-                <input type="password" name="password" required id="id_password">
-            </div>
-            <button type="submit">Ingresar</button>
-        </form>
+
+    <div class="login-wrapper">
+        <div class="login-box">
+            <h2><i class="fa-solid fa-store"></i> SISTEMA TIENDA</h2>
+            
+            {% if form.errors %}
+                <div class="error"><i class="fa-solid fa-triangle-exclamation"></i> Usuario o contraseña incorrectos.</div>
+            {% endif %}
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="input-group">
+                    <label for="id_username">Usuario</label>
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" name="username" placeholder="Ingresa tu usuario" autofocus required id="id_username">
+                </div>
+                <div class="input-group">
+                    <label for="id_password">Contraseña</label>
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" name="password" placeholder="Ingresa tu contraseña" required id="id_password">
+                </div>
+                <button type="submit">Ingresar <i class="fa-solid fa-arrow-right-to-bracket" style="margin-left: 8px;"></i></button>
+            </form>
+        </div>
+
+        <div class="login-footer">
+            <p>Contactar a soporte: <a href="mailto:email@example.com">email@example.com</a></p>
+            <p>&copy; 2026 Todos los derechos reservados.</p>
+        </div>
     </div>
+
 </body>
 </html>

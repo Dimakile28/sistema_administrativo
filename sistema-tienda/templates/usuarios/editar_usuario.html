@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+<style>
+    .header-modulo { margin-bottom: 2rem; border-bottom: 1px solid var(--gris-claro); padding-bottom: 1rem; }
+    .formulario-card { background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--gris-claro); max-width: 800px; margin: 0 auto; }
+    .grid-formulario { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 768px) { .grid-formulario { grid-template-columns: 1fr; } }
+    .form-group label { display: block; font-weight: bold; margin-bottom: 8px; color: var(--gris-medio); font-size: 0.9rem; }
+    .input-form { width: 100%; padding: 12px 15px; border: 1px solid var(--gris-claro); border-radius: 4px; box-sizing: border-box; font-size: 1rem; color: var(--azul-oscuro); outline: none; transition: 0.3s; }
+    .input-form:focus { border-color: var(--azul-oscuro); }
+    .form-actions { margin-top: 30px; display: flex; justify-content: flex-end; gap: 15px; border-top: 1px solid var(--bg-principal); padding-top: 20px; }
+    .btn-cancelar { padding: 12px 20px; border: 1px solid var(--gris-medio); border-radius: 4px; color: var(--azul-oscuro); text-decoration: none; font-weight: bold; }
+    .btn-guardar { padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; background-color: var(--azul-oscuro); color: white; font-weight: bold; }
+    .btn-guardar:hover { background-color: #1a1a24; }
+    .caja-suspension { background-color: #fff3cd; padding: 15px; border-radius: 4px; border-left: 5px solid #ffc107; grid-column: 1 / -1; display: flex; align-items: center; gap: 15px;}
+</style>
+
+<div class="header-modulo">
+    <h1 style="margin: 0;"><i class="fa-solid fa-user-pen"></i> Editar Empleado: {{ usuario_editar.username }}</h1>
+    <p style="color: var(--gris-medio); margin-top: 5px;">Modifica los accesos o suspende la cuenta temporalmente.</p>
+</div>
+
+<div class="formulario-card">
+    <form method="post">
+        {% csrf_token %}
+        <div class="grid-formulario">
+            
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Usuario de acceso</label>
+                {{ form.username }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.first_name.id_for_label }}">Nombre</label>
+                {{ form.first_name }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.last_name.id_for_label }}">Apellido</label>
+                {{ form.last_name }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.rol.id_for_label }}">Nivel de Permisos</label>
+                {{ form.rol }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.sede.id_for_label }}">Sede Asignada</label>
+                {{ form.sede }}
+            </div>
+
+            <div class="form-group caja-suspension">
+                {{ form.is_active }}
+                <label for="{{ form.is_active.id_for_label }}" style="margin: 0; color: #856404; cursor: pointer;">
+                    {{ form.is_active.label }}
+                </label>
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'lista_usuarios' %}" class="btn-cancelar">Cancelar</a>
+            <button type="submit" class="btn-guardar"><i class="fa-solid fa-floppy-disk"></i> Actualizar Cambios</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
