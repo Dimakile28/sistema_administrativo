@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema Administrativo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -156,8 +157,8 @@
         <a href="#"><i class="fa-solid fa-file-invoice-dollar"></i> Consultar Deudas</a>
 
         <!-- Visible desde SUPERVISOR en adelante -->
-        {% if request.user.rol in 'SUPERVISOR,ENCARGADO,ADMIN' %}
-            <a href="#"><i class="fa-solid fa-boxes-stacked"></i> Lectura de Inventario</a>
+        {% if request.user.rol == 'CAJERO' or request.user.rol == 'ADMIN' %}
+            <a href="{% url 'inventario:lista_productos' %}"><i class="fa-solid fa-boxes-stacked"></i> Inventario</a>
             <a href="#"><i class="fa-solid fa-chart-pie"></i> Panel de Ventas</a>
         {% endif %}
 
@@ -185,6 +186,15 @@
 
     <!-- Contenido Dinámico -->
     <div class="content">
+        {% if messages %}
+            <div class="mx-auto mb-6 max-w-7xl space-y-3">
+                {% for message in messages %}
+                    <div class="rounded-lg border px-4 py-3 text-sm {% if message.tags == 'error' %}border-red-200 bg-red-50 text-red-700{% else %}border-emerald-200 bg-emerald-50 text-emerald-700{% endif %}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
         {% block contenido %}
         {% endblock %}
     </div>

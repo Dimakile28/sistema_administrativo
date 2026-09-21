@@ -1,5 +1,28 @@
 from django import forms
-from .models import Usuario
+from .models import Sede, Usuario
+
+
+class SedeForm(forms.ModelForm):
+    class Meta:
+        model = Sede
+        fields = ['nombre', 'direccion', 'activa']
+        widgets = {
+            'nombre': forms.TextInput(attrs={
+                'class': 'input-form',
+                'placeholder': 'Ej. Sede Principal',
+            }),
+            'direccion': forms.Textarea(attrs={
+                'class': 'input-form',
+                'placeholder': 'Dirección de la sede',
+                'rows': 3,
+            }),
+            'activa': forms.CheckboxInput(attrs={
+                'style': 'width: 20px; height: 20px; cursor: pointer;',
+            }),
+        }
+
+    def clean_nombre(self):
+        return self.cleaned_data['nombre'].strip()
 
 class RegistroUsuarioForm(forms.ModelForm):
     # Campo de contraseña manual (para que no se muestre en texto plano)
