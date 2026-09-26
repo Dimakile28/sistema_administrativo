@@ -110,7 +110,7 @@ Toda transacción monetaria debe registrarse en el módulo de auditoría.
         accion=f"Registró abono de {abono.monto}$ a Venta #{venta.id} (Cliente: {cliente.nombre_completo})",
         modulo="Ventas"
     )
-    
+
 ---
 
 ### E. Consulta, Filtros y Exportación de Reportes
@@ -123,4 +123,5 @@ Toda transacción monetaria debe registrarse en el módulo de auditoría.
 El submódulo de ventas es el más utilizado, por lo que su diseño debe ser sumamente ágil:
 * **Tipografía y Colores:** Mantener tipografía **Roboto**. Usar `#2ecc71` (Verde) para ventas al contado/pagadas y `#e74c3c` (Rojo) para resaltar deudas y saldos pendientes.
 * **Buscador de Clientes:** Implementar un buscador en tiempo real (por cédula o nombre) en la pantalla de facturación para evitar duplicar clientes.
+* **Barra de Herramientas de Reportes:** El panel de consulta debe tener una estructura visual similar a la de auditoría, colocando los filtros (búsqueda, fechas, sede) y los botones de exportación (PDF y Excel) en la parte superior de la tabla de registros.
 * **Iconos:** Utilizar íconos FontAwesome (ej. `<i class="fa-solid fa-hand-holding-dollar"></i>` para abonos, `<i class="fa-solid fa-cart-plus"></i>` para agregar productos).
