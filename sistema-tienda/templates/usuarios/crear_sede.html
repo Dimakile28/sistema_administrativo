@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+<style>
+    .header-modulo {
+        margin-bottom: 2rem; border-bottom: 1px solid var(--gris-claro); padding-bottom: 1rem;
+    }
+
+    .formulario-card {
+        background: #ffffff; padding: 30px; border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid var(--gris-claro);
+        max-width: 800px; margin: 0 auto;
+    }
+
+    .form-group label {
+        display: block; font-weight: bold; margin-bottom: 8px;
+        color: var(--gris-medio); font-size: 0.9rem;
+    }
+
+    .input-form {
+        width: 100%; padding: 12px 15px; border: 1px solid var(--gris-claro);
+        border-radius: 4px; box-sizing: border-box; font-size: 1rem;
+        color: var(--azul-oscuro); outline: none; transition: 0.3s;
+    }
+
+    .input-form:focus { border-color: var(--azul-oscuro); }
+
+    .form-actions {
+        margin-top: 30px; display: flex; justify-content: flex-end; gap: 15px;
+        border-top: 1px solid var(--bg-principal); padding-top: 20px;
+    }
+
+    .btn-cancelar {
+        padding: 12px 20px; border: 1px solid var(--gris-medio); border-radius: 4px;
+        color: var(--azul-oscuro); text-decoration: none; font-weight: bold;
+    }
+
+    .btn-guardar {
+        padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer;
+        background-color: var(--azul-oscuro); color: white; font-weight: bold;
+    }
+
+    .btn-guardar:hover { background-color: #1a1a24; }
+
+    .error-list { margin: 0 0 20px; padding: 12px; color: #721c24; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; }
+</style>
+
+<div class="header-modulo">
+    <h1 style="margin: 0;"><i class="fa-solid fa-store"></i> Registrar Nueva Sede</h1>
+    <p style="color: var(--gris-medio); margin-top: 5px;">Agrega una sede disponible para la operación del sistema.</p>
+</div>
+
+<div class="formulario-card">
+    <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="error-list">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="{{ form.nombre.id_for_label }}">Nombre de la sede</label>
+            {{ form.nombre }}
+            {% for error in form.nombre.errors %}<div class="error-list">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="form-group" style="margin-top: 20px;">
+            <label for="{{ form.direccion.id_for_label }}">Dirección</label>
+            {{ form.direccion }}
+            {% for error in form.direccion.errors %}<div class="error-list">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="form-group" style="margin-top: 20px; display: flex; align-items: center; gap: 10px;">
+            {{ form.activa }}
+            <label for="{{ form.activa.id_for_label }}" style="margin: 0;">Sede activa</label>
+            {% for error in form.activa.errors %}<div class="error-list">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'lista_usuarios' %}" class="btn-cancelar">Cancelar</a>
+            <button type="submit" class="btn-guardar"><i class="fa-solid fa-floppy-disk"></i> Guardar Sede</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

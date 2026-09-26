@@ -1,10 +1,11 @@
 # apps/usuarios/views.py
+from django.db import transaction
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .permisos import rol_requerido
-from .models import Usuario, RegistroAuditoria
+from .models import Sede, Usuario, RegistroAuditoria
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegistroUsuarioForm, EditarUsuarioForm
+from .forms import EditarUsuarioForm, RegistroUsuarioForm, SedeForm
 import openpyxl
 from django.http import HttpResponse
 from django.utils.timezone import make_aware
@@ -27,6 +28,27 @@ def lista_usuarios(request):
     # Traemos todos los usuarios ordenados por fecha de registro
     usuarios = Usuario.objects.all().order_by('-date_joined')
     return render(request, 'usuarios/lista_usuarios.html', {'usuarios': usuarios})
+
+
+@login_required
+@rol_requerido('ADMIN')
+def crear_sede(request):
+    if request.method == 'POST':
+        form = SedeForm(request.POST)
+        if form.is_valid():
+            with transaction.atomic():
+                sede = form.save()
+                RegistroAuditoria.objects.create(
+                    usuario=request.user,
+                    accion=f'Creó la sede: {sede.nombre}',
+                    modulo='Usuarios',
+                    ip_origen=request.META.get('REMOTE_ADDR'),
+                )
+            return redirect('lista_usuarios')
+    else:
+        form = SedeForm()
+
+    return render(request, 'usuarios/crear_sede.html', {'form': form})
 
 @login_required
 @rol_requerido('ADMIN')
